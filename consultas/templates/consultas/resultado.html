@@ -2,111 +2,158 @@
 <html>
 <head>
     <title>Resultado da Consulta</title>
+    <script>
+        function exportarMedicamentos() {
+            var selecionados = [];
+            var checkboxes = document.getElementsByName('selecionado');
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    selecionados.push(checkboxes[i].value);
+                }
+            }
+
+            var form = document.createElement('form');
+            form.method = 'post';
+            form.action = '{% url "consultas:exportar_medicamentos" %}';
+
+            for (var i = 0; i < selecionados.length; i++) {
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'selecionado';
+                input.value = selecionados[i];
+                form.appendChild(input);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        function selecionarTodos() {
+            var checkboxes = document.getElementsByName('selecionado');
+            var selectAll = document.getElementById('selectAll');
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = selectAll.checked;
+            }
+        }
+    </script>
 </head>
 <body>
     <h1>Resultado da Consulta</h1>
-
-    {% if medicamentos %}
+    <form method="post" action="{% url 'consultas:exportar_medicamentos' %}">
+        {% csrf_token %}
         <table>
-            <tr>
-                <th>Princípio Ativo</th>
-                <th>CNPJ</th>
-                <th>Laboratório</th>
-                <th>Código GGREM</th>
-                <th>Registro</th>
-                <th>EAN1</th>
-                <th>Produto</th>
-                <th>Apresentação</th>
-                <th>Classe Terapêutica</th>
-                <th>Tipo de Produto</th>
-                <th>Regime de Preço</th>
-                <th>PF sem Impostos</th>
-                <th>PF 0%</th>
-                <th>PF 12%</th>
-                <th>PF 17%</th>
-                <th>PF 17 ALC</th>
-                <th>PF 17.5%</th>
-                <th>PF 17.5 ALC</th>
-                <th>PF 18%</th>
-                <th>PF 18 ALC</th>
-                <th>PF 19%</th>
-                <th>PF 20%</th>
-                <th>PF 21%</th>
-                <th>PF 22%</th>
-                <th>PMVG sem Impostos</th>
-                <th>PMVG 0%</th>
-                <th>PMVG 12%</th>
-                <th>PMVG 17%</th>
-                <th>PMVG 17 ALC</th>
-                <th>PMVG 17.5%</th>
-                <th>PMVG 17.5 ALC</th>
-                <th>PMVG 18%</th>
-                <th>PMVG 18 ALC</th>
-                <th>PMVG 19%</th>
-                <th>PMVG 20%</th>
-                <th>PMVG 21%</th>
-                <th>PMVG 22%</th>
-                <th>Restrição Hospitalar</th>
-                <th>CAP</th>
-                <th>Confaz 87</th>
-                <th>ICMS 0%</th>
-                <th>Análise Recursal</th>
-                <th>Lista Concessão Crédito</th>
-                <th>Comercialização 2022</th>
-                <th>Tarja</th>
-            </tr>
-            {% for medicamento in medicamentos %}
+            <thead>
                 <tr>
-                    <td>{{ medicamento.principio_ativo }}</td>
-                    <td>{{ medicamento.cnpj }}</td>
-                    <td>{{ medicamento.laboratorio }}</td>
-                    <td>{{ medicamento.codigo_ggrem }}</td>
-                    <td>{{ medicamento.registro }}</td>
-                    <td>{{ medicamento.ean1 }}</td>
-                    <td>{{ medicamento.produto }}</td>
-                    <td>{{ medicamento.apresentacao }}</td>
-                    <td>{{ medicamento.classe_terapeutica }}</td>
-                    <td>{{ medicamento.tipo_produto }}</td>
-                    <td>{{ medicamento.regime_preco }}</td>
-                    <td>{{ medicamento.pf_sem_impostos }}</td>
-                    <td>{{ medicamento.pf_0_percent }}</td>
-                    <td>{{ medicamento.pf_12_percent }}</td>
-                    <td>{{ medicamento.pf_17_percent }}</td>
-                    <td>{{ medicamento.pf_17_alc }}</td>
-                    <td>{{ medicamento.pf_175_percent }}</td>
-                    <td>{{ medicamento.pf_175_alc }}</td>
-                    <td>{{ medicamento.pf_18_percent }}</td>
-                    <td>{{ medicamento.pf_18_alc }}</td>
-                    <td>{{ medicamento.pf_19_percent }}</td>
-                    <td>{{ medicamento.pf_20_percent }}</td>
-                    <td>{{ medicamento.pf_21_percent }}</td>
-                    <td>{{ medicamento.pf_22_percent }}</td>
-                    <td>{{ medicamento.pmvg_sem_impostos }}</td>
-                    <td>{{ medicamento.pmvg_0_percent }}</td>
-                    <td>{{ medicamento.pmvg_12_percent }}</td>
-                    <td>{{ medicamento.pmvg_17_percent }}</td>
-                    <td>{{ medicamento.pmvg_17_alc }}</td>
-                    <td>{{ medicamento.pmvg_175_percent }}</td>
-                    <td>{{ medicamento.pmvg_175_alc }}</td>
-                    <td>{{ medicamento.pmvg_18_percent }}</td>
-                    <td>{{ medicamento.pmvg_18_alc }}</td>
-                    <td>{{ medicamento.pmvg_19_percent }}</td>
-                    <td>{{ medicamento.pmvg_20_percent }}</td>
-                    <td>{{ medicamento.pmvg_21_percent }}</td>
-                    <td>{{ medicamento.pmvg_22_percent }}</td>
-                    <td>{{ medicamento.restricao_hospitalar }}</td>
-                    <td>{{ medicamento.cap }}</td>
-                    <td>{{ medicamento.confaz_87 }}</td>
-                    <td>{{ medicamento.icms_0_percent }}</td>
-                    <td>{{ medicamento.analise_recur_sal }}</td>
-                    <td>{{ medicamento.lista_concessao_credito }}</td>
-                    <td>{{ medicamento.comercializacao_2022 }}</td>
-                    <td>{{ medicamento.tarja }}</td>
+                    <th>Selecionar</th>
+                    <th>Princípio Ativo</th>
+                    <th>CNPJ</th>
+                    <th>Laboratório</th>
+                    <th>Código GGREM</th>
+                    <th>Registro</th>
+                    <th>EAN1</th>
+                    <th>Produto</th>
+                    <th>Apresentação</th>
+                    <th>Classe Terapêutica</th>
+                    <th>Tipo de Produto</th>
+                    <th>Regime de Preço</th>
+                    <th>PF sem Impostos</th>
+                    <th>PF 0%</th>
+                    <th>PF 12%</th>
+                    <th>PF 17%</th>
+                    <th>PF 17 ALC</th>
+                    <th>PF 17.5%</th>
+                    <th>PF 17.5 ALC</th>
+                    <th>PF 18%</th>
+                    <th>PF 18 ALC</th>
+                    <th>PF 19%</th>
+                    <th>PF 20%</th>
+                    <th>PF 21%</th>
+                    <th>PF 22%</th>
+                    <th>PMVG sem Impostos</th>
+                    <th>PMVG 0%</th>
+                    <th>PMVG 12%</th>
+                    <th>PMVG 17%</th>
+                    <th>PMVG 17 ALC</th>
+                    <th>PMVG 17.5%</th>
+                    <th>PMVG 17.5 ALC</th>
+                    <th>PMVG 18%</th>
+                    <th>PMVG 18 ALC</th>
+                    <th>PMVG 19%</th>
+                    <th>PMVG 20%</th>
+                    <th>PMVG 21%</th>
+                    <th>PMVG 22%</th>
+                    <th>Restrição Hospitalar</th>
+                    <th>CAP</th>
+                    <th>Confaz 87</th>
+                    <th>ICMS 0%</th>
+                    <th>Análise Recursal</th>
+                    <th>Lista Concessão Crédito</th>
+                    <th>Comercialização 2022</th>
+                    <th>Tarja</th>
                 </tr>
-            {% endfor %}
+            </thead>
+            <tbody>
+                {% for medicamento in medicamentos %}
+                    <tr>
+                        <td><input type="checkbox" name="selecionado" value="{{ medicamento.id }}"></td>
+                        <td>{{ medicamento.principio_ativo }}</td>
+                        <td>{{ medicamento.cnpj }}</td>
+                        <td>{{ medicamento.laboratorio }}</td>
+                        <td>{{ medicamento.codigo_ggrem }}</td>
+                        <td>{{ medicamento.registro }}</td>
+                        <td>{{ medicamento.ean1 }}</td>
+                        <td>{{ medicamento.produto }}</td>
+                        <td>{{ medicamento.apresentacao }}</td>
+                        <td>{{ medicamento.classe_terapeutica }}</td>
+                        <td>{{ medicamento.tipo_produto }}</td>
+                        <td>{{ medicamento.regime_preco }}</td>
+                        <td>{{ medicamento.pf_sem_impostos }}</td>
+                        <td>{{ medicamento.pf_0_percent }}</td>
+                        <td>{{ medicamento.pf_12_percent }}</td>
+                        <td>{{ medicamento.pf_17_percent }}</td>
+                        <td>{{ medicamento.pf_17_alc }}</td>
+                        <td>{{ medicamento.pf_175_percent }}</td>
+                        <td>{{ medicamento.pf_175_alc }}</td>
+                        <td>{{ medicamento.pf_18_percent }}</td>
+                        <td>{{ medicamento.pf_18_alc }}</td>
+                        <td>{{ medicamento.pf_19_percent }}</td>
+                        <td>{{ medicamento.pf_20_percent }}</td>
+                        <td>{{ medicamento.pf_21_percent }}</td>
+                        <td>{{ medicamento.pf_22_percent }}</td>
+                        <td>{{ medicamento.pmvg_sem_impostos }}</td>
+                        <td>{{ medicamento.pmvg_0_percent }}</td>
+                        <td>{{ medicamento.pmvg_12_percent }}</td>
+                        <td>{{ medicamento.pmvg_17_percent }}</td>
+                        <td>{{ medicamento.pmvg_17_alc }}</td>
+                        <td>{{ medicamento.pmvg_175_percent }}</td>
+                        <td>{{ medicamento.pmvg_175_alc }}</td>
+                        <td>{{ medicamento.pmvg_18_percent }}</td>
+                        <td>{{ medicamento.pmvg_18_alc }}</td>
+                        <td>{{ medicamento.pmvg_19_percent }}</td>
+                        <td>{{ medicamento.pmvg_20_percent }}</td>
+                        <td>{{ medicamento.pmvg_21_percent }}</td>
+                        <td>{{ medicamento.pmvg_22_percent }}</td>
+                        <td>{{ medicamento.restricao_hospitalar }}</td>
+                        <td>{{ medicamento.cap }}</td>
+                        <td>{{ medicamento.confaz_87 }}</td>
+                        <td>{{ medicamento.icms_0_percent }}</td>
+                        <td>{{ medicamento.analise_recursal }}</td>
+                        <td>{{ medicamento.lista_concessao_credito }}</td>
+                        <td>{{ medicamento.comercializacao_2022 }}</td>
+                        <td>{{ medicamento.tarja }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
         </table>
-    {% else %}
-        <p>Nenhum medicamento encontrado.</p>
-    {% endif %}
+        <label for="selectAll">Selecionar Todos</label>
+        <input type="checkbox" id="selectAll" onclick="selecionarTodos()">
+        <button type="button" onclick="exportarMedicamentos()">Exportar Selecionados</button>
+    </form>
+
+</form>
+
+
+<button onclick="window.location.href='{% url 'consultas:consulta_medicamentos' %}'">Voltar à Consulta</button>
+
 </body>
 </html>

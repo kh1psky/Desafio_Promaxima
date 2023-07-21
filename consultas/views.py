@@ -5,6 +5,10 @@ from rest_framework import status
 from .models import Medicamento
 import pandas as pd
 from .serializers import MedicamentoSerializer
+from django.http import HttpResponse
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_protect
 
 class MedicamentoAPIView(APIView):
     def get(self, request):
@@ -19,12 +23,12 @@ class MedicamentoAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@csrf_protect  # Adicione o decorator
 def consulta_medicamentos(request):
     if request.method == 'POST':
         filtro_principio_ativo = request.POST.get('principio_ativo', '')
         filtro_laboratorio = request.POST.get('laboratorio', '')
-        filtro_produto = request.POST.get('produto', '')
+        filtro_classe_terapeutica = request.POST.get('classe_terapeutica', '')
 
         medicamentos = Medicamento.objects.all()
 
@@ -32,12 +36,32 @@ def consulta_medicamentos(request):
             medicamentos = medicamentos.filter(principio_ativo__icontains=filtro_principio_ativo)
         if filtro_laboratorio:
             medicamentos = medicamentos.filter(laboratorio__icontains=filtro_laboratorio)
-        if filtro_produto:
-            medicamentos = medicamentos.filter(produto__icontains=filtro_produto)
+        if filtro_classe_terapeutica:
+            medicamentos = medicamentos.filter(classe_terapeutica__icontains=filtro_classe_terapeutica)
 
         return render(request, 'consultas/resultado.html', {'medicamentos': medicamentos})
 
     return render(request, 'consultas/consulta.html')
+
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def exportar_medicamentos(request):
+    if request.method == 'POST':
+        selecionados_ids = request.POST.getlist('selecionado')  # Receive data as form data
+
+        medicamentos_selecionados = Medicamento.objects.filter(id__in=selecionados_ids)
+
+        df = pd.DataFrame(list(medicamentos_selecionados.values()))
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename=medicamentos_selecionados.xlsx'
+        df.to_excel(response, index=False)
+
+        return response
+
+    return HttpResponse()
+
+
 
 def importar_dados_xls():
     df = pd.read_excel('C:\\Users\\Home\\Pictures\\consulta.xls')

@@ -1,24 +1,24 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Consulta de Medicamentos</title>
-</head>
-<body>
-    <h1>Consulta de Medicamentos</h1>
+{% extends 'consultas/base.html' %}
 
-    <form method="post" action="{% url 'consultas:consulta_medicamentos' %}">
-        {% csrf_token %}
+{% block title %}
+Consulta de Medicamentos
+{% endblock %}
 
-        <label for="principio_ativo">Princípio Ativo:</label>
-        <input type="text" id="principio_ativo" name="principio_ativo"><br><br>
+{% block content %}
+<h1>Consulta de Medicamentos</h1>
 
-        <label for="laboratorio">Laboratório:</label>
-        <input type="text" id="laboratorio" name="laboratorio"><br><br>
+<form id="consultaForm" method="post" action="{% url 'consultas:consulta_medicamentos' %}">
+    {% csrf_token %}
 
-        <label for="classe_terapeutica">Classe Terapêutica:</label>
-        <input type="text" id="classe_terapeutica" name="classe_terapeutica"><br><br>
+    <label for="principio_ativo">Princípio Ativo:</label>
+    <input type="text" id="principio_ativo" name="principio_ativo"><br><br>
 
-        <input type="submit" value="Consultar">
-    </form>
-</body>
-</html>
+    <label for="laboratorio">Laboratório:</label>
+    <input type="text" id="laboratorio" name="laboratorio"><br><br>
+
+    <label for="classe_terapeutica">Classe Terapêutica:</label>
+    <input type="text" id="classe_terapeutica" name="classe_terapeutica"><br><br>
+
+    <input type="submit" value="Consultar">
+</form>
+{% endblock %}

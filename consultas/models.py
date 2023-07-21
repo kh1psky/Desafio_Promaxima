@@ -49,6 +49,7 @@ class Medicamento(models.Model):
     comercializacao_2022 = models.CharField(max_length=100)
     tarja = models.CharField(max_length=100)
     objects = models.Manager()
+    selecionado = models.BooleanField(default=False)
 
 
     def __str__(self):

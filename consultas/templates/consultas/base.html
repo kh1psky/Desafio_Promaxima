@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Título da Página{% endblock %}</title>
+</head>
+<body>
+    <header>
+        
+        <h1>Meu Site</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'consultas:consulta_medicamentos' %}">Consultar Medicamentos</a></li>
+            
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        
+        {% endblock %}
+    </main>
+
+    <footer>
+        
+        <p>© 2023 Meu Site. Todos os direitos reservados.</p>
+    </footer>
+</body>
+</html>
