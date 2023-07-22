@@ -43,9 +43,6 @@ def consulta_medicamentos(request):
 
     return render(request, 'consultas/consulta.html')
 
-from django.views.decorators.csrf import csrf_exempt
-
-@csrf_exempt
 def exportar_medicamentos(request):
     if request.method == 'POST':
         selecionados_ids = request.POST.getlist('selecionado')  # Receive data as form data
@@ -60,7 +57,6 @@ def exportar_medicamentos(request):
         return response
 
     return HttpResponse()
-
 
 
 def importar_dados_xls():
